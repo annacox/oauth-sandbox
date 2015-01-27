@@ -75,10 +75,10 @@ app.get('/auth/github',
 app.get('/auth/github/callback',
     passport.authenticate('github', {
         scope: ['user', 'repo'],
-        failureRedirect: '/login'
+        failureRedirect: '/#/login'
     }),
     function(req, res) {
-        res.redirect('/');
+        res.redirect('/#/admin');
     });
 
 // ===============================================================
@@ -95,8 +95,8 @@ app.post('/logout', function(req, res){
 });
 
 
-app.get('/admin', auth, function(req, res) {
-    res.render('admin');
+app.get('/securedResource', auth, function(req, res) {
+    res.send([]);
 });
 
 // ===============================================================
