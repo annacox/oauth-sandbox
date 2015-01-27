@@ -1,6 +1,6 @@
 # Sandbox for trying out OAuth with AngularJS and NodeJS
 
-Uses the angular-seed application skeleton.
+Uses AngularJS (angular-seed application skeleton), NodeJS, and ExpressJS.
 
 ## Getting Started
 
