@@ -1,9 +1,9 @@
 {
-  "name": "angular-seed",
+  "name": "oauth-sandbox",
   "private": true,
   "version": "0.0.0",
-  "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
+  "description": "Try out OAuth with AngularJS and NodeJS",
+  "repository": "https://github.com/annacox/oauth-sandbox.git",
   "license": "MIT",
   "devDependencies": {
     "karma": "~0.10",
