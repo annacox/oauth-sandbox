@@ -1,13 +1,12 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+var app = angular.module('myApp', [
   'ngRoute',
-  'myApp.view1',
-  'myApp.view2',
   'myApp.version',
   'myApp.auth',
-  'myApp.admin',
+    'myApp.home',
+    'myApp.profile'
 ]).
 config(function($routeProvider, $httpProvider) {
 
@@ -50,22 +49,22 @@ config(function($routeProvider, $httpProvider) {
 
   // define routes
   $routeProvider
-      .when('/view1', {
-        templateUrl: 'view1/view1.html',
-        controller: 'View1Ctrl'
+      .when('/home', {
+          templateUrl: 'home/home.html',
+          controller: 'HomeCtrl'
+      })
+      .when('/profile', {
+          templateUrl: 'profile/profile.html',
+          controller: 'ProfileCtrl',
+          resolve: {
+              loggedin: checkLoggedIn
+          }
       })
       .when('/login', {
         templateUrl: 'auth/login.html',
         controller: 'AuthCtrl'
       })
-      .when('/admin', {
-        templateUrl: 'admin/admin.html',
-        controller: 'AdminCtrl',
-        resolve: {
-          loggedin: checkLoggedIn
-        }
-      })
-      .otherwise({redirectTo: '/view1'});
+      .otherwise({redirectTo: '/home'});
 })
 .run(function($rootScope, $http) {
   $rootScope.message = '';

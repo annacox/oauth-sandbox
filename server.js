@@ -78,7 +78,7 @@ app.get('/auth/github/callback',
         failureRedirect: '/#/login'
     }),
     function(req, res) {
-        res.redirect('/#/admin');
+        res.redirect('/#/profile');
     });
 
 // ===============================================================
