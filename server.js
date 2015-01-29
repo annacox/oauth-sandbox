@@ -5,6 +5,8 @@ var expressSession = require('express-session');
 var config = require('config');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
+var userRoles = require('./app/routingConfig').userRoles;
+var accessLevels = require('./app/routingConfig').accessLevels;
 
 // ==========================================================
 // setup passport
@@ -78,6 +80,15 @@ app.get('/auth/github/callback',
         failureRedirect: '/#/login'
     }),
     function(req, res) {
+        var role = userRoles.public, username = '';
+        if (req.user) {
+            role = userRoles.user; // change this later if we use more than two roles
+            username = req.user.username;
+        }
+        res.cookie('user', JSON.stringify({
+            'username': username,
+            'role': role
+        }));
         res.redirect('/#/profile');
     });
 

@@ -3,30 +3,15 @@
 // Declare app level module which depends on views, and components
 var app = angular.module('myApp', [
   'ngRoute',
+  'ngCookies',
   'myApp.version',
-  'myApp.auth',
-    'myApp.home',
-    'myApp.profile'
+  'myApp.login',
+  'myApp.home',
+  'myApp.profile'
 ]).
 config(function($routeProvider, $httpProvider) {
 
-  // check if user is connected
-  var checkLoggedIn = function($q, $timeout, $http, $location, $rootScope) {
-    // initialize a new promise
-    var deferred = $q.defer();
-
-    $http.get('/loggedin').success(function(user) {
-      if (user !== '0') {
-        $timeout(deferred.resolve, 0);
-      } else {
-        $rootScope.message = 'You need to log in.';
-        $timeout(function() {deferred.reject();}, 0);
-        $location.url('/login');
-      }
-    });
-
-    return deferred.promise;
-  };
+  var access = routingConfig.accessLevels;
 
   // add an interceptor for AJAX errors
   $httpProvider.responseInterceptors.push(function($q, $location) {
@@ -51,30 +36,32 @@ config(function($routeProvider, $httpProvider) {
   $routeProvider
       .when('/home', {
           templateUrl: 'home/home.html',
-          controller: 'HomeCtrl'
+          controller: 'HomeCtrl',
+          access: access.anon
       })
       .when('/profile', {
           templateUrl: 'profile/profile.html',
           controller: 'ProfileCtrl',
-          resolve: {
-              loggedin: checkLoggedIn
-          }
+          access: access.user
       })
       .when('/login', {
-        templateUrl: 'auth/login.html',
-        controller: 'AuthCtrl'
+          templateUrl: 'login/login.html',
+          controller: 'LoginCtrl',
+          access: access.anon
       })
-      .otherwise({redirectTo: '/home'});
+      .otherwise({redirectTo: '/home', access: access.anon});
 })
-.run(function($rootScope, $http) {
-  $rootScope.message = '';
-
-  //logout function is available from any page
-  $rootScope.logout = function() {
-    rootScope.message = 'Logged out.';
-    $http.post('/logout');
-  };
-});
+.run(['$rootScope', '$location', 'AuthService', function($rootScope, $location, AuthService) {
+    $rootScope.$on("$routeChangeStart", function(event, next, current) {
+        if (!AuthService.authorize(next.access)) {
+            if (AuthService.isLoggedIn()) {
+                $location.path('/');
+            } else {
+                $location.path('/login');
+            }
+        }
+    })
+}]);
 
 app.controller('IndexCtrl', function($scope, $location, $anchorScroll) {
 });
