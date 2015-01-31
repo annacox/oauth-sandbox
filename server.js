@@ -102,7 +102,7 @@ app.get('/loggedin', function(req, res) {
 // route to log out
 app.post('/logout', function(req, res){
     req.logOut();
-    res.send(200);
+    res.sendStatus(200);
 });
 
 

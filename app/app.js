@@ -63,5 +63,14 @@ config(function($routeProvider, $httpProvider) {
     })
 }]);
 
-app.controller('IndexCtrl', function($scope, $location, $anchorScroll) {
-});
+app.controller('IndexCtrl', ['$rootScope', '$scope', '$location', 'AuthService', function($rootScope, $scope, $location, AuthService) {
+
+    $scope.logout = function() {
+        AuthService.logout(function() {
+            $location.path('/login');
+        }, function() {
+            $rootScope.error = "Failed to logout";
+        });
+    };
+
+}]);

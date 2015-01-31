@@ -2,13 +2,17 @@
 
 angular.module('myApp')
 
-    .factory('AuthService', ['$cookieStore', function($cookieStore){
+    .factory('AuthService', ['$cookieStore', '$http', function($cookieStore, $http){
 
         var accessLevels = routingConfig.accessLevels
             , userRoles = routingConfig.userRoles
             , currentUser = $cookieStore.get('user') || { username: '', role: userRoles.public };
 
         $cookieStore.remove('user');
+
+        function changeUser(user) {
+            angular.extend(currentUser, user);
+        }
 
         return {
             authorize: function(accessLevel, role) {
@@ -23,6 +27,15 @@ angular.module('myApp')
                     user = currentUser;
                 }
                 return user.role.title === userRoles.user.title || user.role.title === userRoles.admin.title;
+            },
+            logout: function(success, error) {
+                $http.post('/logout').success(function(){
+                    changeUser({
+                        username: '',
+                        role: userRoles.public
+                    });
+                    success();
+                }).error(error);
             },
             accessLevels: accessLevels,
             userRoles: userRoles,
